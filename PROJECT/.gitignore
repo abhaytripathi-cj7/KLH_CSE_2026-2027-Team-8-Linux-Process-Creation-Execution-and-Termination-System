@@ -1,0 +1,10 @@
+.netlify/
+netlify-dist/
+__pycache__/
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.pyc
+payment

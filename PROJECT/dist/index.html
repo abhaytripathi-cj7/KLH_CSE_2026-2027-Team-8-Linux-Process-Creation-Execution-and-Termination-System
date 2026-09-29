@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ProcessPay — Linux Process Lab</title>
+  <meta name="description" content="Explore real Linux process creation, OTP waiting, termination and exit through a local payment simulation.">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23101b32'/%3E%3Cpath d='M9 8h9a6 6 0 010 12h-4v5H9zm5 5v3h4a1.5 1.5 0 000-3z' fill='%235de0bc'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/style.css"><script src="/config.js"></script><script src="/app.js" defer></script>
+</head>
+<body>
+<header><a class="brand" href="/" aria-label="ProcessPay home"><span class="logo">P</span>ProcessPay<span class="brand-label"> / Linux lab</span></a><span class="connection" id="connection">Connecting…</span></header>
+<main>
+  <div class="heading"><div><p class="eyebrow">OPERATING SYSTEMS · INTERACTIVE LAB</p><h1>A payment. A process.</h1><p class="intro">Follow a real Linux process from creation to its final exit.</p></div><span class="local-tag">LOCALHOST <span>↗</span></span></div>
+  <section class="lifecycle" aria-label="Process lifecycle">
+    <div data-step="create"><span>01</span><div><strong>Create</strong><code>fork()</code></div></div><b>→</b>
+    <div data-step="execute"><span>02</span><div><strong>Execute</strong><code>exec()</code></div></div><b>→</b>
+    <div data-step="wait"><span>03</span><div><strong>Wait for OTP</strong><code>read()</code></div></div><b>→</b>
+    <div data-step="end"><span>04</span><div><strong>Exit / terminate</strong><code>exit() · SIGTERM</code></div></div><b>→</b>
+    <div data-step="reap"><span>05</span><div><strong>Reap</strong><code>waitpid()</code></div></div>
+  </section>
+  <div class="workspace">
+    <section class="panel payment-panel"><div class="panel-title"><h2>Payment sandbox</h2><span class="small-label">SIMULATION</span></div>
+      <form id="payment-form"><fieldset id="setup"><legend>Payment mode</legend><div class="modes">
+        <label><input type="radio" name="mode" value="UPI" checked><span>↗<strong>UPI</strong></span></label>
+        <label><input type="radio" name="mode" value="Card"><span>▤<strong>Card</strong></span></label>
+        <label><input type="radio" name="mode" value="Net banking"><span>▥<strong>Bank</strong></span></label>
+      </div><label class="input-label" for="amount">Amount <span>demo units</span></label><div class="amount-field"><span>₹</span><input id="amount" type="number" min="1" max="1000000" step="1" value="500" required></div>
+      <button class="primary" type="submit" id="pay-button">Pay & create process <span>↗</span></button></fieldset></form>
+      <div id="otp-area" hidden><div class="waiting-label">CHILD PROCESS IS WAITING</div><h3>Verify your payment</h3><p>The worker is sleeping until you send an OTP.</p><form id="otp-form"><label class="input-label" for="otp">One-time password</label><input id="otp" class="otp" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" placeholder="0 0 0 0 0 0" required><p class="hint">Demo code <code>123456</code> · Any other code fails.</p><button type="submit" class="primary" id="verify">Verify & complete payment</button></form><button class="decline" id="decline">Decline payment <code>SIGTERM</code></button></div>
+      <div class="result" id="result" hidden aria-live="polite"></div>
+      <p id="error" class="error" role="alert" hidden></p><p class="sandbox-note">No money moves. Every process is real.</p>
+    </section>
+    <section class="panel monitor"><div class="panel-title"><div><h2>Process inspector</h2><p>Live data from the Linux kernel</p></div><span id="state-badge" class="badge">Ready</span></div>
+      <div class="process-tree"><div><span>PAYMENT APPLICATION</span><strong id="parent-pid">PID —</strong><small id="parent-ppid">PPID —</small></div><div class="tree-link"><code>fork()</code><span>→</span></div><div class="child-node"><span>PAYMENT WORKER</span><strong id="child-pid">PID —</strong><small id="child-ppid">PPID —</small></div></div>
+      <div class="stats"><div><span>Process state</span><strong id="process-state">Not created</strong></div><div><span>Exit code</span><strong id="exit-code">—</strong></div><div><span>Signal</span><strong id="signal">—</strong></div></div>
+      <div class="inspector-label"><span>CHILD PROCESS DETAILS</span><span id="snapshot-label">Waiting for payment</span></div>
+      <dl class="details"><div><dt>User ID</dt><dd id="uid">—</dd></div><div><dt>Process group</dt><dd id="pgid">—</dd></div><div><dt>Session ID</dt><dd id="sid">—</dd></div><div><dt>Threads</dt><dd id="threads">—</dd></div><div><dt>Memory · RSS</dt><dd id="memory">—</dd></div><div><dt>Nice value</dt><dd id="nice">—</dd></div></dl>
+      <div class="explanation" id="explanation">Choose a payment mode and press Pay. A new child process will appear here with its own PID.</div>
+    </section>
+  </div>
+  <section class="panel activity"><div class="panel-title"><h2>Execution trace</h2><span class="small-label" id="event-count">0 EVENTS</span></div><div id="events" class="events"><div class="empty"><span>⌁</span><p>Your process story starts with a payment.<small>System calls and state changes will appear here.</small></p></div></div><details class="terminal-wrap"><summary>View raw process output <code>stdout</code></summary><pre id="terminal">Waiting for a process…</pre></details></section>
+  <footer><span><strong>ProcessPay</strong> · Linux process lifecycle project</span><span>fork → exec → read → exit / signal → waitpid</span></footer>
+</main>
+</body></html>

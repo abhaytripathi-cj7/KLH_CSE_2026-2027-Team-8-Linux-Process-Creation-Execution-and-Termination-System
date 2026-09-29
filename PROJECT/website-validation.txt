@@ -1,0 +1,4 @@
+PASS: UPI, success, real PIDs, sleeping, zombie, reaping, API validation
+PASS: Card, failed, real PIDs, sleeping, zombie, reaping, API validation
+PASS: Net banking, declined, real PIDs, sleeping, zombie, reaping, API validation
+All localhost website integration checks passed.

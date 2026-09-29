@@ -1,0 +1,4 @@
+PASS: separate visitors, real PID/PPID, success, decline and reaping
+PASS: incorrect OTP exits with code 1
+PASS: deadline terminates and reaps abandoned payment
+PASS: unknown session and untrusted browser origin rejected

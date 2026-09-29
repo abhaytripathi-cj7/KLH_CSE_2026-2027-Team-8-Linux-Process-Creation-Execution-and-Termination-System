@@ -1,0 +1,65 @@
+LINUX PROCESS LIFECYCLE THROUGH A PAYMENT
+Educational simulation only.
+
+========== PARENT: payment application ==========
+Name:	payment
+State:	R (running)
+Pid:	508
+PPid:	497
+Uid:	1000	1000	1000	1000
+VmRSS:	    1876 kB
+Threads:	1
+PGID=497 | SID=497 | nice=0
+
+PAY: fork() creates a new payment process. Parent PID=508
+
+========== CREATION: child before exec() ==========
+Name:	payment
+State:	R (running)
+Pid:	509
+PPid:	508
+Uid:	1000	1000	1000	1000
+VmRSS:	    1068 kB
+Threads:	1
+PGID=497 | SID=497 | nice=0
+exec(): replace child program image with payment worker; PID stays the same.
+
+========== EXECUTION: same child PID after exec() ==========
+Name:	exe
+State:	R (running)
+Pid:	509
+PPid:	508
+Uid:	1000	1000	1000	1000
+VmRSS:	    2004 kB
+Threads:	1
+PGID=497 | SID=497 | nice=0
+Payment worker: mode=UPI | amount=500 (demo units)
+WAITING FOR OTP: worker blocks in read(pipe). Demo OTP: 123456
+
+========== OTP WAIT: parent inspects payment child ==========
+Name:	exe
+State:	S (sleeping)
+Pid:	509
+PPid:	508
+Uid:	1000	1000	1000	1000
+VmRSS:	    2004 kB
+Threads:	1
+PGID=497 | SID=497 | nice=0
+Relationship: parent PID=508 -> child PID=509; child PPID=508
+DEMO ACTION: decline
+DECLINED: kill(509, SIGTERM); signal=15
+
+PARENT WAIT: waitid(WEXITED | WNOWAIT) waits for child termination.
+
+========== TERMINATED: zombie before parent reaps it ==========
+Name:	exe
+State:	Z (zombie)
+Pid:	509
+PPid:	508
+Uid:	1000	1000	1000	1000
+Threads:	1
+PGID=497 | SID=497 | nice=0
+
+REAPED: waitpid() returned PID=509; parent PID=508; raw status=15
+WIFSIGNALED=true | WTERMSIG=15 (Terminated)
+Child reaped: its process-table entry is released; parent remains alive.

@@ -1,0 +1,4 @@
+PASS: public Netlify HTML and backend configuration
+PASS: public HTTPS success; parent PID 15939, child PID 15941, exit=0, signal=None
+PASS: public HTTPS failed; parent PID 15947, child PID 15949, exit=1, signal=None
+PASS: public HTTPS declined; parent PID 15955, child PID 15957, exit=None, signal=15

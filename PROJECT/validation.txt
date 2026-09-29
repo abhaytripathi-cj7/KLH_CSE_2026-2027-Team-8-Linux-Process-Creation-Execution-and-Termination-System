@@ -1,0 +1,8 @@
+gcc -std=c11 -Wall -Wextra -Wpedantic -O2 payment.c -o payment
+python3 tests.py
+PASS: success, PID/PPID, exec PID continuity, sleeping, zombie, reaping
+PASS: wrong-otp, PID/PPID, exec PID continuity, sleeping, zombie, reaping
+PASS: decline, PID/PPID, exec PID continuity, sleeping, zombie, reaping
+PASS: interactive UPI, Card and Net banking
+PASS: interactive decline and input EOF cleanup
+PASS: invalid amounts do not create payment children
