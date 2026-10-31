@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PipeTalk — Linux IPC Chat</title>
+  <meta name="description" content="Bidirectional communication between independent Linux processes using named pipes.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23635bff'/%3E%3Ctext x='17' y='45' font-size='43' fill='white'%3EP%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/style.css"><script src="/app.js" defer></script>
+</head>
+<body>
+<aside class="sidebar">
+  <a class="brand" href="/" aria-label="PipeTalk home"><span class="brand-icon">p<span>↗</span></span><span>PipeTalk<span class="brand-sub">LINUX IPC WORKSPACE</span></span></a>
+  <div class="nav-label">WORKSPACE</div>
+  <nav aria-label="Workspace navigation">
+    <button class="nav-button selected" data-view="chat" aria-current="page"><span class="nav-icon">▤</span>Live chat<span class="nav-dot"></span></button>
+    <button class="nav-button" data-view="processes"><span class="nav-icon">▦</span>Process inspector</button>
+    <button class="nav-button" data-view="guide"><span class="nav-icon">◎</span>How it works</button>
+  </nav>
+  <div class="sidebar-note"><span class="tiny-label">THE CONNECTION</span><div class="mini-flow"><b>A</b><span>⇄</span><b class="pipe-icon">FIFO</b><span>⇄</span><b>B</b></div><p>Two processes.<br>One conversation.</p></div>
+  <div class="sidebar-bottom"><span id="connection-dot" class="status-dot"></span><div id="connection-label">Connecting to Linux…</div><span class="version">v1.0</span></div>
+</aside>
+<main>
+  <header class="topbar"><span class="breadcrumb">Workspace <span>/</span> <b id="breadcrumb-name">Live chat</b></span><div class="top-actions"><span class="pill">TEAM 08</span><span class="linux-pill"><span>●</span> Linux IPC</span></div></header>
+  <section class="page-heading"><div><div class="eyebrow">INTER-PROCESS COMMUNICATION</div><h1 id="page-title">A conversation, at process level.</h1><p id="page-description">Send a message. Watch Linux carry it from one process to another.</p></div><a class="button secondary" href="/api/export" download>↓ &nbsp; Export session</a></section>
+  <div id="notice" class="notice" role="alert" hidden></div>
+  <section class="metrics" aria-label="Session statistics">
+    <article class="metric"><span class="metric-icon purple">⇄</span><div><span class="metric-label">Messages delivered</span><strong id="metric-delivered">—</strong></div><span class="metric-note" id="sent-count">Waiting for backend</span></article>
+    <article class="metric"><span class="metric-icon green">▦</span><div><span class="metric-label">Active processes</span><strong id="metric-processes">—<small> / 2</small></strong></div><span class="metric-note">Independent PIDs</span></article>
+    <article class="metric"><span class="metric-icon amber">ϟ</span><div><span class="metric-label">Observed delivery</span><strong id="metric-latency">—</strong></div><span class="metric-note">Session average · ms</span></article>
+  </section>
+
+  <div id="view-chat" class="view">
+    <div class="section-bar"><h2>Live conversation <span class="badge">BIDIRECTIONAL</span></h2><span class="muted">Transport: <b>Linux named pipes</b></span></div>
+    <section class="chat-grid" aria-label="Two process chat workspace">
+      <article class="chat-card" data-peer="A">
+        <header class="chat-header"><span class="avatar avatar-a">A</span><div><h3>Process A</h3><p><span class="peer-dot status-dot"></span><span id="peer-a-info">Connecting…</span></p></div><span class="endpoint">ENDPOINT 01</span></header>
+        <div class="chat-direction">SENDS TO B <span>→</span> <code>a_to_b.fifo</code></div>
+        <div class="messages" id="messages-a" role="log" aria-label="Process A messages" aria-live="polite"><div class="empty-state"><div class="empty-icon">⇄</div><h4>Start something here.</h4><p>Messages from A travel through a real<br>Linux FIFO to Process B.</p></div></div>
+        <form class="composer" data-sender="A"><label class="sr-only" for="input-a">Message from Process A</label><div class="input-row"><textarea id="input-a" rows="2" placeholder="Write as Process A…" maxlength="1600"></textarea><button class="send-button" type="submit" aria-label="Send from Process A">↑</button></div><div class="composer-meta"><span>Enter to send · Shift+Enter for a new line</span><span class="byte-count">0 / 1600 B</span></div></form>
+      </article>
+      <article class="chat-card" data-peer="B">
+        <header class="chat-header"><span class="avatar avatar-b">B</span><div><h3>Process B</h3><p><span class="peer-dot status-dot"></span><span id="peer-b-info">Connecting…</span></p></div><span class="endpoint">ENDPOINT 02</span></header>
+        <div class="chat-direction">SENDS TO A <span>→</span> <code>b_to_a.fifo</code></div>
+        <div class="messages" id="messages-b" role="log" aria-label="Process B messages" aria-live="polite"><div class="empty-state"><div class="empty-icon">⇄</div><h4>The other side is listening.</h4><p>Reply from B to complete the<br>two-way IPC conversation.</p></div></div>
+        <form class="composer" data-sender="B"><label class="sr-only" for="input-b">Message from Process B</label><div class="input-row"><textarea id="input-b" rows="2" placeholder="Write as Process B…" maxlength="1600"></textarea><button class="send-button green-button" type="submit" aria-label="Send from Process B">↑</button></div><div class="composer-meta"><span>Enter to send · Shift+Enter for a new line</span><span class="byte-count">0 / 1600 B</span></div></form>
+      </article>
+    </section>
+    <section class="activity-panel"><div class="section-bar"><h2><span class="live-mark"></span>Transport activity</h2><span class="muted">Confirmed by the C backend</span></div><div id="event-list" class="event-list"><p class="muted">Waiting for process events…</p></div></section>
+  </div>
+
+  <div id="view-processes" class="view" hidden>
+    <div class="section-bar"><h2>Under the hood</h2><button class="button secondary" id="restart-button">↻ &nbsp; Restart processes</button></div>
+    <p class="muted inspector-intro">Live Linux process information from <code>/proc</code>. Restarting creates new peer PIDs; the current session history remains visible.</p>
+    <div id="process-cards" class="process-grid"></div>
+    <section class="detail-card"><h2>IPC channels</h2><p class="muted">Two FIFO special files, one for each direction. Permissions: owner read/write only.</p><div id="fifo-list"></div></section>
+    <section class="detail-card terminal-card"><div class="section-bar"><h2>Verify in your Ubuntu terminal</h2><button id="copy-commands" class="button terminal-copy">Copy commands</button></div><pre id="terminal-commands">Connecting…</pre><p>These commands inspect the running application. Terminal PIDs match the dashboard.</p></section>
+    <div class="runtime-footer"><span>Bridge PID: <b id="bridge-pid">—</b></span><span>Session uptime: <b id="uptime">—</b></span><span>Local access only · 127.0.0.1</span></div>
+  </div>
+
+  <div id="view-guide" class="view" hidden>
+    <section class="detail-card guide-hero"><span class="eyebrow">THE MESSAGE JOURNEY</span><h2>Browser input. Linux transport. Verified delivery.</h2><p>The browser provides the interface. Two separate C processes exchange the actual message using kernel-managed named pipes.</p><div class="journey"><div><span>01</span><b>Web interface</b><small>Submit a message</small></div><i>→</i><div><span>02</span><b>Python bridge</b><small>Forward to peer stdin</small></div><i>→</i><div><span>03</span><b>C process A</b><small>write() to FIFO</small></div><i>→</i><div><span>04</span><b>C process B</b><small>read() and confirm</small></div></div><p class="guide-caption">A receiving-process event returns through stdout to the bridge. The browser polls the bridge every 500 ms. Replies use the second FIFO in the opposite direction.</p></section>
+    <div class="guide-grid"><section class="detail-card"><h2>Why two pipes?</h2><p>Each direction has its own channel: A → B and B → A. Both peers can send and receive. On Linux, each peer opens its FIFO descriptors with <code>O_RDWR | O_NONBLOCK</code> to avoid startup ordering deadlocks.</p></section><section class="detail-card"><h2>What counts as delivered?</h2><p>A message is marked delivered only when the destination C process reports the matching message it read from the FIFO. Observed delivery time includes bridge scheduling and confirmation overhead; it is not a kernel-only benchmark.</p></section></div>
+    <section class="detail-card"><h2>Linux implementation</h2><div class="syscall-grid"><div><code>mkfifo()</code><p>Creates the two named pipes.</p></div><div><code>open()</code><p>Opens the peer's FIFO descriptors.</p></div><div><code>poll()</code><p>Waits for input without busy looping.</p></div><div><code>write() / read()</code><p>Transfers atomic JSON message frames.</p></div><div><code>close()</code><p>Releases FIFO file descriptors.</p></div><div><code>SIGTERM</code><p>Stops peers for restart or shutdown.</p></div></div></section>
+    <p class="muted small-print">Session history retains the latest 500 messages and 200 transport events in memory. Export it before closing the server. Session counters include all messages submitted during the current server run.</p>
+  </div>
+  <footer class="page-footer"><span>PipeTalk <span class="footer-slash">/</span> Inter-Process Chat Application</span><span>Powered by Linux named pipes <span class="footer-dot">●</span></span></footer>
+</main>
+</body></html>
